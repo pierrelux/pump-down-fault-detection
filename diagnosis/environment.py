@@ -192,34 +192,49 @@ class HVACEnvironment:
         )
         self._geom = SystemGeometry.paper_split_system()
 
+        # Pre-compute baseline: what this unit looked like when healthy,
+        # at the same outdoor temperature
+        self._baseline = self._compute_readings(
+            charge_lbm=8.08,
+            superheat_K=5.0,
+            evap_fouling_K=0.0,
+            compressor_degradation=1.0,
+            T_outdoor_F=scenario.T_outdoor_F,
+            T_indoor_F=scenario.T_indoor_F,
+            fan_speed=0.45,
+        )
+
     @property
     def query_count(self):
         return self._query_count
 
-    def read_sensors(self, fan_speed: float = 0.45) -> SensorReadings:
-        """Take sensor readings at given condenser fan speed [m/s].
+    @property
+    def baseline(self) -> SensorReadings:
+        """Readings from last maintenance visit (system verified healthy).
 
-        fan_speed: condenser air frontal velocity.
-            0.45 = normal, 0.20 = low, 0.80 = high.
+        Same outdoor/indoor temperature as the current scenario.
         """
-        self._query_count += 1
-        s = self.scenario
+        return self._baseline
 
+    def _compute_readings(self, charge_lbm, superheat_K, evap_fouling_K,
+                          compressor_degradation, T_outdoor_F, T_indoor_F,
+                          fan_speed) -> SensorReadings:
+        """Compute sensor readings for given system state."""
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
             ss = solve_charge_balance(
-                M_target_kg=s.charge_lbm * LBM_TO_KG,
-                T_outdoor_K=F_to_K(s.T_outdoor_F),
+                M_target_kg=charge_lbm * LBM_TO_KG,
+                T_outdoor_K=F_to_K(T_outdoor_F),
                 compressor=self._compressor,
                 condenser_geom=OUTDOOR_MCHX_SPLIT,
                 system_geom=self._geom,
                 ref=self._ref,
                 V_air_frontal=fan_speed,
-                T_indoor_K=F_to_K(s.T_indoor_F),
-                superheat_K=s.superheat_K,
+                T_indoor_K=F_to_K(T_indoor_F),
+                superheat_K=superheat_K,
                 n_segments=30,
-                evap_approach_K=12.0 + s.evap_fouling_K,
-                compressor_degradation=s.compressor_degradation,
+                evap_approach_K=12.0 + evap_fouling_K,
+                compressor_degradation=compressor_degradation,
             )
 
         T_sat_suction_F = K_to_F(ss.T_evap_K)
@@ -233,9 +248,27 @@ class HVACEnvironment:
             suction_temperature_F=T_suction_F,
             liquid_line_temperature_F=T_liquid_line_F,
             discharge_temperature_F=K_to_F(ss.T_discharge_K),
-            outdoor_temperature_F=s.T_outdoor_F,
-            indoor_temperature_F=s.T_indoor_F,
+            outdoor_temperature_F=T_outdoor_F,
+            indoor_temperature_F=T_indoor_F,
             superheat_F=ss.superheat_K * 9.0 / 5.0,
             subcooling_F=ss.subcooling_K * 9.0 / 5.0,
             _mass_flow_lbm_h=ss.m_dot_kg_s / LBM_TO_KG * 3600,
+        )
+
+    def read_sensors(self, fan_speed: float = 0.45) -> SensorReadings:
+        """Take sensor readings at given condenser fan speed [m/s].
+
+        fan_speed: condenser air frontal velocity.
+            0.45 = normal, 0.20 = low, 0.80 = high.
+        """
+        self._query_count += 1
+        s = self.scenario
+        return self._compute_readings(
+            charge_lbm=s.charge_lbm,
+            superheat_K=s.superheat_K,
+            evap_fouling_K=s.evap_fouling_K,
+            compressor_degradation=s.compressor_degradation,
+            T_outdoor_F=s.T_outdoor_F,
+            T_indoor_F=s.T_indoor_F,
+            fan_speed=fan_speed,
         )

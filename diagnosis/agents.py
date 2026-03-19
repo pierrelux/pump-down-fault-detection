@@ -9,117 +9,96 @@ from .evaluate import Diagnosis
 
 
 def rule_based_agent(env: HVACEnvironment, spec_sheet: str) -> Diagnosis:
-    """ASHRAE-style single-reading rule-based diagnosis.
+    """Baseline-comparison rule-based diagnosis.
 
-    Takes one set of readings at normal fan speed and applies fixed rules.
-    No active testing.
+    Takes one set of readings at normal fan speed and compares to baseline.
     """
     r = env.read_sensors(fan_speed=0.45)
+    b = env.baseline
 
-    # TXV faults: superheat is the giveaway
-    if r.superheat_F < 4.0:
-        return Diagnosis(
-            fault_type="txv_stuck_open",
-            confidence=0.9,
-            reasoning=f"Superheat is {r.superheat_F:.1f}°F, well below normal 8-14°F range. "
-                      "TXV is likely stuck open, allowing liquid flood-back.",
-        )
-    if r.superheat_F > 16.0:
-        return Diagnosis(
-            fault_type="txv_stuck_closed",
-            confidence=0.9,
-            reasoning=f"Superheat is {r.superheat_F:.1f}°F, above normal 8-14°F range. "
-                      "TXV is likely stuck closed or restricted.",
-        )
+    d_sc = r.subcooling_F - b.subcooling_F
+    d_sh = r.superheat_F - b.superheat_F
+    d_psuc = r.suction_pressure_psi - b.suction_pressure_psi
+    d_pdis = r.discharge_pressure_psi - b.discharge_pressure_psi
 
-    # Low suction pressure: evaporator fouling
-    if r.suction_pressure_psi < 160.0:
-        return Diagnosis(
-            fault_type="evap_fouling",
-            confidence=0.7,
-            reasoning=f"Suction pressure is {r.suction_pressure_psi:.1f} psi, below normal "
-                      "120-180 range. Low suction pressure with normal superheat suggests "
-                      "reduced airflow across evaporator (fouling or blower issue).",
-        )
+    # TXV faults: superheat changes significantly
+    if d_sh < -4.0:
+        return Diagnosis(fault_type="txv_stuck_open", confidence=0.9,
+                         reasoning=f"SH dropped {d_sh:+.1f}°F from baseline ({b.superheat_F:.0f}→{r.superheat_F:.0f}°F).")
+    if d_sh > 6.0:
+        return Diagnosis(fault_type="txv_stuck_closed", confidence=0.9,
+                         reasoning=f"SH rose {d_sh:+.1f}°F from baseline ({b.superheat_F:.0f}→{r.superheat_F:.0f}°F).")
 
-    # Subcooling-based charge diagnosis
-    if r.subcooling_F < 3.0:
-        return Diagnosis(
-            fault_type="low_charge",
-            confidence=0.8,
-            reasoning=f"Subcooling is {r.subcooling_F:.1f}°F, well below normal 8-18°F. "
-                      "Very low subcooling indicates insufficient refrigerant charge.",
-        )
+    # Evaporator fouling: suction pressure drops
+    if d_psuc < -10.0:
+        return Diagnosis(fault_type="evap_fouling", confidence=0.8,
+                         reasoning=f"P_suc dropped {d_psuc:+.1f} psi from baseline.")
 
-    if r.subcooling_F > 22.0:
-        return Diagnosis(
-            fault_type="high_charge",
-            confidence=0.7,
-            reasoning=f"Subcooling is {r.subcooling_F:.1f}°F, above normal 8-18°F. "
-                      "High subcooling suggests system is overcharged.",
-        )
+    # Charge faults: subcooling changes
+    if d_sc < -5.0:
+        return Diagnosis(fault_type="low_charge", confidence=0.8,
+                         reasoning=f"SC dropped {d_sc:+.1f}°F from baseline ({b.subcooling_F:.0f}→{r.subcooling_F:.0f}°F).")
+    if d_sc > 10.0:
+        return Diagnosis(fault_type="high_charge", confidence=0.7,
+                         reasoning=f"SC rose {d_sc:+.1f}°F from baseline ({b.subcooling_F:.0f}→{r.subcooling_F:.0f}°F).")
 
-    # Low discharge pressure + moderate subcooling: compressor wear
-    if r.discharge_pressure_psi < 350.0 and r.subcooling_F < 12.0:
-        return Diagnosis(
-            fault_type="compressor_wear",
-            confidence=0.5,
-            reasoning=f"Discharge pressure is {r.discharge_pressure_psi:.1f} psi (low) "
-                      f"with subcooling {r.subcooling_F:.1f}°F (moderate). Suggests reduced "
-                      "compressor capacity.",
-        )
+    # Compressor wear: discharge pressure drops with moderate SC drop
+    if d_pdis < -15.0 and d_sc < -2.0:
+        return Diagnosis(fault_type="compressor_wear", confidence=0.6,
+                         reasoning=f"P_dis dropped {d_pdis:+.1f} psi and SC dropped {d_sc:+.1f}°F from baseline.")
 
-    return Diagnosis(
-        fault_type="healthy",
-        confidence=0.6,
-        reasoning=f"Readings within normal ranges: P_suc={r.suction_pressure_psi:.0f}, "
-                  f"P_dis={r.discharge_pressure_psi:.0f}, SC={r.subcooling_F:.1f}°F, "
-                  f"SH={r.superheat_F:.1f}°F.",
-    )
+    return Diagnosis(fault_type="healthy", confidence=0.7,
+                     reasoning=f"Readings close to baseline: dSC={d_sc:+.1f}°F, dSH={d_sh:+.1f}°F, "
+                               f"dP_suc={d_psuc:+.1f}, dP_dis={d_pdis:+.1f}.")
 
 
 def active_rule_agent(env: HVACEnvironment, spec_sheet: str) -> Diagnosis:
-    """Rule-based agent that uses fan speed perturbation to disambiguate.
+    """Baseline-comparison agent with fan speed perturbation.
 
-    Takes a baseline reading, then bumps the fan to high speed and checks
-    whether subcooling responds.
+    Compares current readings to baseline, then uses fan speed test
+    to disambiguate charge vs compressor faults.
     """
-    r_normal = env.read_sensors(fan_speed=0.45)
+    r = env.read_sensors(fan_speed=0.45)
+    b = env.baseline
 
-    # TXV faults (no fan test needed)
-    if r_normal.superheat_F < 4.0:
+    d_sc = r.subcooling_F - b.subcooling_F
+    d_sh = r.superheat_F - b.superheat_F
+    d_psuc = r.suction_pressure_psi - b.suction_pressure_psi
+    d_pdis = r.discharge_pressure_psi - b.discharge_pressure_psi
+
+    # TXV faults
+    if d_sh < -4.0:
         return Diagnosis(fault_type="txv_stuck_open", confidence=0.9,
-                         reasoning=f"SH={r_normal.superheat_F:.1f}°F is very low.")
-    if r_normal.superheat_F > 16.0:
+                         reasoning=f"SH dropped {d_sh:+.1f}°F from baseline.")
+    if d_sh > 6.0:
         return Diagnosis(fault_type="txv_stuck_closed", confidence=0.9,
-                         reasoning=f"SH={r_normal.superheat_F:.1f}°F is very high.")
+                         reasoning=f"SH rose {d_sh:+.1f}°F from baseline.")
 
-    # Low suction pressure: evaporator fouling
-    if r_normal.suction_pressure_psi < 160.0:
+    # Evaporator fouling
+    if d_psuc < -10.0:
         return Diagnosis(fault_type="evap_fouling", confidence=0.8,
-                         reasoning=f"P_suc={r_normal.suction_pressure_psi:.1f} psi is low "
-                                   "with normal SH — evaporator airflow issue.")
+                         reasoning=f"P_suc dropped {d_psuc:+.1f} psi from baseline.")
 
-    # Fan speed test for charge/compressor disambiguation
-    if r_normal.subcooling_F < 12.0 or r_normal.discharge_pressure_psi < 365.0:
-        r_high_fan = env.read_sensors(fan_speed=0.80)
-        sc_delta = r_high_fan.subcooling_F - r_normal.subcooling_F
+    # Something is off with SC or P_dis — do fan test to disambiguate
+    if d_sc < -3.0 or d_pdis < -10.0:
+        r_high = env.read_sensors(fan_speed=0.80)
+        sc_response = r_high.subcooling_F - r.subcooling_F
 
-        if r_normal.subcooling_F < 3.0:
-            # Very low SC, doesn't respond to fan → low charge
+        if r.subcooling_F < 3.0:
             return Diagnosis(fault_type="low_charge", confidence=0.9,
-                             reasoning=f"SC={r_normal.subcooling_F:.1f}°F near zero, "
-                                       f"fan test delta={sc_delta:.1f}°F confirms low charge.")
-        else:
-            # Moderate SC drop + low P_dis → compressor wear
-            return Diagnosis(fault_type="compressor_wear", confidence=0.7,
-                             reasoning=f"SC={r_normal.subcooling_F:.1f}°F moderate, "
-                                       f"P_dis={r_normal.discharge_pressure_psi:.0f} low, "
-                                       f"fan test SC delta={sc_delta:.1f}°F.")
+                             reasoning=f"SC={r.subcooling_F:.1f}°F (baseline {b.subcooling_F:.0f}°F), "
+                                       f"fan test SC delta={sc_response:+.1f}°F. No liquid to subcool.")
 
-    if r_normal.subcooling_F > 22.0:
+        # Both low charge and compressor wear drop SC and P_dis.
+        # Compressor wear also drops mdot, which we can't measure directly,
+        # but the fan test response differs.
+        return Diagnosis(fault_type="compressor_wear", confidence=0.6,
+                         reasoning=f"SC dropped {d_sc:+.1f}°F, P_dis dropped {d_pdis:+.1f} psi, "
+                                   f"fan test SC delta={sc_response:+.1f}°F.")
+
+    if d_sc > 10.0:
         return Diagnosis(fault_type="high_charge", confidence=0.7,
-                         reasoning=f"SC={r_normal.subcooling_F:.1f}°F is high — overcharged.")
+                         reasoning=f"SC rose {d_sc:+.1f}°F from baseline.")
 
-    return Diagnosis(fault_type="healthy", confidence=0.6,
-                     reasoning="All readings within normal ranges.")
+    return Diagnosis(fault_type="healthy", confidence=0.7,
+                     reasoning=f"Readings close to baseline: dSC={d_sc:+.1f}°F, dP_dis={d_pdis:+.1f}.")

@@ -65,10 +65,16 @@ Here is the manufacturer spec sheet for the unit:
 {spec_sheet}
 </spec_sheet>
 
-You have access to a tool called `read_sensors` that lets you take pressure and temperature readings from the system. You can also change the condenser fan speed to perform perturbation tests.
+Here are sensor readings from the last maintenance visit, when the system was verified healthy and operating correctly at the same outdoor temperature:
+
+<baseline_readings>
+{baseline}
+</baseline_readings>
+
+You have access to a tool called `read_sensors` that lets you take current pressure and temperature readings from the system. You can also change the condenser fan speed to perform perturbation tests.
 
 Your task:
-1. Take readings to understand the system's current state
+1. Take current readings and compare them to the baseline
 2. If needed, perform perturbation tests (e.g., change fan speed) to disambiguate faults
 3. Diagnose the system
 
@@ -95,10 +101,12 @@ def build_llm_agent(model: str = "claude-sonnet-4-20250514", verbose: bool = Fal
     client = anthropic.Anthropic()
 
     def agent_fn(env: HVACEnvironment, spec_sheet: str) -> Diagnosis:
-        system_prompt = SYSTEM_PROMPT_TEMPLATE.format(spec_sheet=spec_sheet)
+        baseline_text = str(env.baseline)
+        system_prompt = SYSTEM_PROMPT_TEMPLATE.format(
+            spec_sheet=spec_sheet, baseline=baseline_text)
 
         messages = [
-            {"role": "user", "content": "Please diagnose this HVAC system. Start by taking sensor readings."}
+            {"role": "user", "content": "Please diagnose this HVAC system. Start by taking current sensor readings and comparing to the baseline."}
         ]
 
         # Tool-use loop
