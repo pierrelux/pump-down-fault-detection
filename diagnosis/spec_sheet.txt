@@ -1,0 +1,34 @@
+MANUFACTURER SPECIFICATION SHEET
+=================================
+
+Model:          ResComfort RC-36A Split System Air Conditioner
+Type:           Residential split system, cooling only
+Refrigerant:    R-410A
+Nominal charge: 8.08 lbm (factory charge, 25 ft liquid line)
+
+OUTDOOR UNIT (Condensing Unit)
+  Compressor:     Scroll, single-speed, 3600 RPM
+  Condenser:      Microchannel heat exchanger, louvered fins
+  Condenser fan:  Single-speed, 900 CFM nominal
+  Rated capacity: 36,000 BTU/h at 95°F outdoor
+
+INDOOR UNIT (Evaporator / Air Handler)
+  Evaporator:     Microchannel heat exchanger
+  Expansion:      Thermostatic expansion valve (TXV)
+  TXV superheat:  8-12°F nominal
+  Blower:         Multi-speed
+
+CONNECTING LINES
+  Liquid line:    3/8" OD copper, field-installed
+  Suction line:   7/8" OD copper, field-installed
+
+NORMAL OPERATING RANGES (cooling mode, 95°F outdoor, 80°F indoor)
+  Suction pressure:    120-180 psi
+  Discharge pressure:  300-420 psi
+  Subcooling:          8-18°F
+  Superheat:           8-14°F
+  Discharge temperature: 140-180°F
+
+SAFETY CONTROLS
+  Low-pressure cutout:  20 psi
+  High-pressure cutout: 610 psi
