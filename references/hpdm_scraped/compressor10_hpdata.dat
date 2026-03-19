@@ -1,0 +1,23 @@
+! Comment line to describe the system - to be inputted
+C	0	16	n	10001				!	COMP	"VARIABLE SPEED ARI TEN COEFF MODEL, TSAT_SUC & TSAT_DISCARGE IN [F]"
+P	0	s	Map_File	0		Comp10Map.csv			!	replace these text with map file string
+P	1	d	Stand_Sup	0		20			!	positive-standard suction superheat; negative-absolulate return gas temperature [F]
+V	0	i	T_Suc_Sat	0	y	50.5			!	Compressor suction saturation T [F]
+V	1	i	T_Dis_Sat	0	y	110			!	Compressor discharge saturation T [F]
+V	2	r	H_Suc	0	y				!	Compressor suction H [Btu/lbm]
+V	3	r	H_Dis	0	y				!	Compressor discharge H [Btu/lbm]
+V	4	r	Mr	0	y				!	Compressor mass flow rate [lbm/h]
+V	5	r	Power	0	y				!	Compressor power [W]
+V	6	i	Power_Adj	0	y	1			!	Compressor power multiplier [-]
+V	7	i	Mr_Adj	0	y	1			!	Compressor flow rate multiplier [-]
+V	8	i	Heat_Gain_Ratio	0	y	0.9			!	Compressor heat gain ratio [-]
+V	9	r	P_suc	0	y				!	Compressor suction pressure [psia]
+V	10	r	P_dis	0	y				!	Compressor discharge pressure [psia]
+V	11	r	Mr_adj_sup	0	y				!	"Compressor flow rate multiplier [-], considering differed suction state"
+V	12	i	Superheat	0	y	20			!	"superheat dgree, positive-superheat, negative-quality"
+V	13	i	RPM	0	y	3500			!	"Compressor rational speed in RPM, referring to map coefficients"
+V	14	o	SpeedCorrection	0	y				!	"shall close to 1.0, if converged"
+V	15	r	DiscTemp	0	y				!	discharge temperature [F]
+{	End of Components	}							!	end of components and equations
+!	" After this row, input batch run inputs, starting with 'B'"
+O	0;4	0;5						! 	output variable shortlist

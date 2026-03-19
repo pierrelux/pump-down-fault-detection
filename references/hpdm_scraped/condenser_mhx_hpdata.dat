@@ -1,0 +1,88 @@
+! Comment line to describe the system - to be inputted
+C	0	47	n	10001				!	Condenser	SEGMENT-TO-SEGMENT FIN-TUBE COIL MODEL
+P	0	s	Dummy	0		N			!	input N directly
+P	1	i	Dummy	0		100			!	"dummy input, suggest using 100"
+P	2	i	Evap_or_Cond	0		0			!	"0 means condenser, other value mean evaporator"
+P	3	i	Dummy	0		0			!	"dummy input, shoudl always be zero"
+P	4	i	FINTYP	0		3			!	Fin type: 1-Plain fin; 2 - Wavy plate fin; 3 - slit fin; 4 - Louvered fin; 5 - Convex lourvered fin; 6- Smooth wavy fin
+P	5	d	FINLEN	0		28			!	"Fin Length, [in]"
+P	6	d	FINDEP	0		1.75			!	"Fin Depth, [in]"
+P	7	d	FINTHICK	0		0.005512			!	"Fin thickness, [in]"
+P	8	d	FINDENSITY	0		190			!	"Fin density, fins/foot"
+P	9	d	FINCONDUCT	0		128.3			!	"Fin material conductance, [Btu/hr-ft-F]"
+P	10	i	HOLENUM	0		56			!	Hole count in the Fin
+P	11	i	TUBNUM	0		56			!	Tube Count in the Fin
+P	12	i	TUBTYP	0		1			!	"Tube type, 0 -smooth tube, 1-internally enhanced tube"
+P	13	d	TUBLENGTH	0		32			!	"Tube length, [in]"
+P	14	d	CASELENGTH	0		32			!	"Casing length, i.e. finned tube length, [in]"
+P	15	d	TUBEID	0		0.248			!	"Tube inside diameter, [in]"
+P	16	d	TUBOD	0		0.276			!	"Tube outside diameter, [in]"
+P	17	d	TUBWTHICK	0		0.014			!	"Tube Wall Thickness, [in]"
+P	18	d	TUBCONDUCT	0		196			!	"Tube Wall Conductance, [Btu/hr-ft-F]"
+P	19	d	Pt	0		1			!	"Tube Pitch Perpendicular to Airflow Direction, [in]"
+P	20	d	Pr	0		0.875			!	"Tube Pitch along Airflow Direction, [in]"
+P	21	d	RADBEND	0		0.5			!	"Radius of Return Bend, [in]"
+P	22	i	ROWNUM	0		2			!	Row Number
+P	23	d	HTADJ_AIR_D	0		1.5			!	Air Side Heat Transfer Multiplier -Dry Heat Transfer
+P	24	d	HTADJ_REF	0		1.5			!	Refrigerant Side Heat Tranfer Multiplier
+P	25	d	DPADJ_REF	0		1.8			!	Refrigerant Side Pressure Drop Multiplier
+P	26	d	HTADJ_AIR_S	0		1.5			!	Air Side Heat Transfer Multiplier for Subcooler Only
+P	27	d	HTADJ_REF_S	0		1.5			!	Refrigerant Side Heat Tranfer Multiplier for Subcooler Only
+P	28	d	DPADJ_REF_S	0		1			!	Refrigerant Side Pressure Drop Multiplier for subcooler Only
+P	29	d	HTADJ_AIR_W	0		1			!	Air Side Heat Transfer Multiplier -Wet Heat Transfer
+P	30	d	DPADJ_AIR_D	0		1			!	Air Side Pressure Drop Multiplier - Dry Coil
+P	31	d	DPADJ_AIR_W	0		1			!	Air Side Pressure Drop Multiplier - Wet Coil
+P	32	d	FOUL	0		0			!	Fouling Factor
+P	33	d	CIRCSCALE	0		1			!	scaling factor for HX circuits
+P	34	i	Dummy	0		1			!	"whether use look-table properties, 1 - use (default), 0-not use"
+P	35	i	Dummy	0		0			!	"user specified HX state, 1-pure vapor, 0-include 2-phase, -1 - pure liquid"
+P	36	i	SEGNUM	0		20			!	segment number of each tube
+P	37	i	STEPNUM	0		1			!	"number of steps in the coil, <= 5; note: step counted from condenser refr flow direction"
+P	38	i	STAGGERED	0		1			!	0=INLINE LAYOUT; 1=STAGGERED LAYOUT
+P	39	i	CIRCNUM0	0		7			!	number of circuits in step 0
+P	40	i	TUBNUM0	0		4			!	"number of tubes, at front row, per circ, in step 0"
+P	41	i	PATTERN0	0		0			!	flow pattern-> 1: counter flow; -1: parallel flow; 0: crosse flow; step 0; in condenser mode
+P	42	i	CIRCNUM1	0		0			!	number of circuits in step 1
+P	43	i	TUBNUM1	0		0			!	"number of tubes, at front row, per circ, in step 1"
+P	44	i	PATTERN1	0		0			!	flow pattern-> 1: counter flow; -1: parallel flow; 0: crosse flow; step 1; in condenser mode
+P	45	i	CIRCNUM2	0		0			!	number of circuits in step 2
+P	46	i	TUBNUM2	0		0			!	"number of tubes, at front row, per circ, in step 2"
+P	47	i	PATTERN2	0		0			!	flow pattern-> 1: counter flow; -1: parallel flow; 0: crosse flow; step 2; in condenser mode
+P	48	i	CIRCNUM3	0		0			!	number of circuits in step 3
+P	49	i	TUBNUM3	0		0			!	"number of tubes, at front row, per circ, in step 3"
+P	50	i	PATTERN3	0		0			!	flow pattern-> 1: counter flow; -1: parallel flow; 0: crosse flow; step 3; in condenser mode
+P	51	i	CIRCNUM4	0		0			!	number of circuits in step 4
+P	52	i	TUBNUM4	0		0			!	"number of tubes, at front row, per circ, in step 4"
+P	53	i	PATTERN4	0		0			!	flow pattern-> 1: counter flow; -1: parallel flow; 0: crosse flow; step 4; in condenser mode
+V	0	i	TSIN	0	y	110			!	"entering saturation temp [F], if super-critical, it is the same as the inlet pressure"
+V	1	r	HIN	0	y				!	entering enthalpy [btu/lb]
+V	2	r	HOUT	0	y				!	exit enthalpy [Btu/lb]
+V	3	i	MR	0	y	400			!	refrigerant mass flow rate [lb/h]
+V	4	r	A_V	0	y				!	vapor phase area
+V	5	r	A_TP	0	y				!	two-phase area
+V	6	r	A_L	0	y				!	liquid phase area
+V	7	r	Q_V	0	y				!	vapor phase heat transfer rate [Btu/h]
+V	8	r	Q_TP	0	y				!	two-phase heat transfer rate [Btu/h]
+V	9	r	Q_L	0	y				!	liquid phase heat transfer rate [Btu/h]
+V	10	r	DP_R	0	y				!	refrigerant side DP [pisd]
+V	11	r	CHARGE	0	y				!	charge mass [lbm]
+V	12	i	AIR_FLOW_RATE	0	y	8674			!	[lb/hr]
+V	13	r	DP_AIR	0	y				!	air side dp [inH2O]
+V	14	r	TO_AIR	0	y				!	air exit temperature [F]
+V	15	i	TI_C	0	y	95			!	air entering temperature [F]
+V	16	i	HUMI	0	y	0.0071			!	air entering specific humidity
+V	17	i	P_ATM	0	y	14.6			!	atmospheric pressure [psia]
+V	18	r	POUT	0	y				!	refrigerant exit pressure [psia]
+V	19	r	PIN	0	y				!	 refrigerant entering pressure [psia]
+V	20	r	Q_TOT	0	y				!	total heat transfer rate [Btu/h]
+V	21	i	SPEC_EXT	0	y	10			!	"exit subcooling, superheat dgree [F] or quality, quality is minus, if supercritical, the exit temp"
+V	22	o	SHR	0	y				!	"coil sensible heat tranfer ratio, output only"
+V	23	r	HUMO	0	y				!	air exit specific humidity
+V	24	o	HODRY	0	y				!	fluid side dry heat transfer coefficient
+V	25	o	HOWET	0	y				!	fluid side wet (or subcooler) heat transfer coefficient
+V	26	o	UAV	0	y				!	vapor phase UA
+V	27	o	UATP	0	y				!	two-phase UA
+V	28	o	UAL	0	y				!	liquid-phase UA
+{	End of Components	}							!	end of components and equations
+!	" After this row, input batch run inputs, starting with 'B'"
+O	0;20	0;11	0;6	0;5	0;4	0;21		! 	output variable shortlist

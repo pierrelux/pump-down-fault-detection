@@ -1,0 +1,150 @@
+# HPDM ScMhxs Default Run Output
+# Configuration: Space Cooling, Residential — VS compressor, MHX coils
+# Date scraped: 2026-03-18
+# Conditions: T_outdoor=95°F, T_indoor=80°F, RPM=4500, R410A
+# Charge target: 7.00 lbm (ChargSOLVER target)
+# Note: Solver converged to SysCharge=5.17 lbm (different from target —
+#       65-tube condenser + HPDM default lines can't hold 7 lbm at these conditions)
+
+## System Summary
+Status: P (Passed)
+EER: 10.3441
+NetCapa: 22539.7 Btu/h
+TotPow: 2179 W
+SysCharge: 5.17307 lbm
+
+## Compressor (Component 0)
+T_Suc_Sat: 50.691 °F
+T_Dis_Sat: 126.764 °F
+H_Suc: 186.28 Btu/lb
+H_Dis: 203.841 Btu/lb
+Mr: 314.581 lbm/h
+Power: 1799 W
+Heat_Gain_Ratio: 0.9
+P_suc: 159.126 psia
+P_dis: 471.895 psia
+Mr_adj_sup: 1.01683
+Superheat: 14.1056 R
+DISPLACEVOL: 0.000501302 ft3
+RPM: 4500
+ETA_S: 0.681559 (isentropic efficiency)
+ETA_V: 0.93131 (volumetric efficiency)
+DischargTemp: 185.29 °F
+SuctTemp: 64.7966 °F
+PRESSURE_RATIO: 2.96555
+
+## DischargeLine (Component 3)
+Length: 1 ft
+ID: 0.036333333 ft (= 11.07 mm)
+InVol: 2.63E-03 ft3 (= 7.45e-5 m3)
+MR: 314.581 lb/h
+H_in: 203.841 Btu/lb
+H_out: 201.279 Btu/lb
+P_in: 471.895 psia
+P_out: 470.895 psia
+DP: 1 psid
+DH: 2.56238 Btu/lb
+DQ: 806.078 Btu/h
+DT: 4.05 R
+CHARG: 0.0175436 lbm
+
+## SuctionLine (Component 4)
+Length: 20.4 ft
+ID: 0.056666667 ft (= 17.27 mm)
+InVol: 9.24E-02 ft3 (= 2.617e-3 m3)
+MR: 314.581 lb/h
+H_in: 185.234 Btu/lb
+H_out: 186.28 Btu/lb
+P_in: 162.126 psia
+P_out: 159.126 psia
+DP: 3 psid
+DH: -1.04663 Btu/lb
+DQ: -329.251 Btu/h
+DT: -3.53 R
+CHARG: 0.234753 lbm
+
+## Condenser (Component 5) — 65-tube MHX
+TUBNUM: 65
+HOLENUM: 14 ports/tube
+Dhi: 0.0315 in (= 0.8001 mm)
+TUBLENGTH: 46.67 in (= 1.185 m)
+PASSNUM: 2 (47+18 tube distribution)
+SEGNUM: 50
+TSIN: 126.596 °F (entering sat temp)
+Q_TOT: 28518.9 Btu/h
+CHARGE: 1.02617 lbm
+TO_AIR: 109.215 °F
+TI_C: 95 °F (outdoor temp)
+SPEC_EXT: 29.9297 R (subcooling — solver converged here)
+UA_VAP: 200.504
+UA_TP: 908.51
+UA_LIQ: 668.011
+HTADJ_AIR_D: 1.22 (air-side HTC multiplier)
+HTADJ_REF: 0.94 (ref-side HTC multiplier)
+
+## Evaporator (Component 6) — 80-tube MHX
+TUBNUM: 80
+HOLENUM: 26 ports/tube
+Dhi: 0.0263 in (= 0.668 mm)
+TUBLENGTH: 45 in (= 1.143 m)
+PASSNUM: 1 (80 tubes, single pass)
+SEGNUM: 50
+TSIN: 51.7607 °F (entering sat temp)
+Q_TOT: -23392.7 Btu/h
+CHARGE: 0.55556 lbm
+TI_C: 80 °F (indoor temp)
+SPEC_EXT: 10 R (superheat)
+SHR: 0.689248
+
+## LiquidLine (Component 7)
+Length: 44 ft
+ID: 0.025916667 ft (= 7.90 mm)
+InVol: 5.27E-02 ft3 (= 1.492e-3 m3)
+MR: 314.581 lb/h
+H_in: 110.768 Btu/lb
+H_out: 110.768 Btu/lb
+P_in: 470.434 psia
+P_out: 469.434 psia
+DP: 1 psid
+DH: ~0 Btu/lb (no enthalpy change — adiabatic liquid line)
+DT: 0 R
+CHARG: 3.33904 lbm
+
+## ChargSOLVER (Component 8)
+SOLVERON: 1
+IDCOMPIN: 5 (Condenser)
+IDXIN: 21 (SPEC_EXT = subcooling)
+IDCOMPOUT: 9 (ChargFunc)
+IDXOUT: 0 (SysCharge)
+TARGET: 7.00 lbm
+INIVAL: 10 (initial subcooling guess)
+LOWBOUND: -0.3
+HIGHBOUND: 30
+MAXITER: 30
+STEP: 0.5
+DIREC: 1 (charge increases with subcooling)
+
+## ChargFunc (Component 9)
+Description: V:DischargeLine:CHARG+V:SuctionLine:CHARG+V:LiquidLine:CHARG+V:Condenser:CHARGE+V:Evaporator:CHARGE
+SysCharge: 5.17307 lbm
+
+## Charge Breakdown Summary
+DischargeLine:  0.0175 lbm  (0.34%)
+SuctionLine:    0.2348 lbm  (4.54%)
+Condenser:      1.0262 lbm  (19.84%)
+Evaporator:     0.5556 lbm  (10.74%)
+LiquidLine:     3.3390 lbm  (64.55%)
+TOTAL:          5.1731 lbm  (100.00%)
+
+## Notes
+- ChargSOLVER target was 7.00 lbm but solver converged at subcooling=30°F
+  (HIGHBOUND) with only 5.17 lbm achievable — the 65-tube condenser geometry
+  can't hold 7 lbm at 95°F outdoor. This is the HPDM default, not the paper's
+  229-tube system.
+- NO compressor shell charge is included in the total — ChargFunc sums only
+  the 5 line/HX components.
+- InVol for each line is independently specified (not derived from Length × π/4 × ID²).
+  The InVol values are 2-3× larger than what the ID+Length geometry implies,
+  suggesting InVol accounts for fittings, service valves, etc.
+- Condenser uses HTADJ_REF=0.94 (6% reduction in ref-side HTC) and
+  HTADJ_AIR_D=1.22 (22% increase in air-side HTC) as calibration multipliers.

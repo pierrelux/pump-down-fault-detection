@@ -1,0 +1,8 @@
+!	model intialization and component enum list
+REFR0	R410A	1	!	major system refrigerant type
+REFR1	R410A	1	!	alternative refrigerant type
+INFILE	hpdata.hpdm 		!	component input file name
+OUTFILE	out.xls 		!	output file name
+TEMPFILE	temp.xls	0	!	"temporary output file name; 0 - not keeping the temporary file, 1 - to keep the temporary file"
+OUTFORM	0		!	0 - not patch the temporary output files; 1 - patch the temp files; 2 - output in the format for Genopt optimization
+! 	"below are component list, the listed order is also component solving order"

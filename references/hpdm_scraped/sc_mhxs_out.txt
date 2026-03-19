@@ -1,0 +1,176 @@
+!	---	Component List	---	System	REFR0: 	R410A	REFR1: 	R410A
+!	0	COMP
+!	1	CondFan
+!	2	EvapFan
+!	3	DischargeLine
+!	4	SuctionLine
+!	5	Condenser
+!	6	Evaporator
+!	7	LiquidLine
+!	8	ChargSOLVER
+!	9	ChargFunc
+!	10	INDCFMcal
+!	11	ODCFMcal
+!	12	TotPowCal
+!	13	CapaCal
+!	14	EERcal
+!	---	Output Variable List	---
+!	0-T_Suc_Sat	Compressor suction saturation T [F]
+!	0-T_Dis_Sat	Compressor discharge saturation T [F]
+!	0-H_Suc	Compressor suction H [Btu/lbm]
+!	0-H_Dis	Compressor discharge H [Btu/lbm]
+!	0-Mr	Compressor mass flow rate [lbm/h]
+!	0-Power	Compressor power [W]
+!	0-Power_Adj	Compressor power multiplier [-]
+!	0-Mr_Adj	Compressor flow rate multiplier [-]
+!	0-Heat_Gain_Ratio	Compressor heat gain ratio [-]
+!	0-P_suc	Compressor suction pressure [psia]
+!	0-P_dis	Compressor discharge pressure [psia]
+!	0-Mr_adj_sup	Compressor flow rate multiplier [-], considering differed suction state
+!	0-Superheat	superheat dgree, positive-superheat, negative-quality
+!	0-S_suc	compressor suction entropy, [Btu/lb/F]
+!	0-H_dis_s	isentropic discharge enthalpy, [Btu/lb/F]
+!	0-VOL_suc	suction specific volume [ft^3/lb]
+!	0-DISPLACEVOL	displacement volume, [ft^3]
+!	0-RPM	rotational speed, [rpm]
+!	0-ETA_S	isentropic efficiency, with assuming zero shell loss ratio [-]
+!	0-ETA_V	volumetric efficiency, [-]
+!	0-dischargTemp	discharge temperature [F]
+!	0-PRESSURE_RATIO	compression pressure ratio, [-]
+!	0-SuctTemp	suction temperature, [F]
+!	1-mass_flow_rate	mass flow rate [lbm/h]; for air, it is dry air mass flow
+!	1-DP	static head, [inH2O] for air stream
+!	1-Tin	entering fluid temperature, [F]
+!	1-Tout	exit fluid temperature, [F]
+!	1-vol_flow_rate_in	ent volumetric flow rate, [ft^3/h]
+!	1-Power	Power consumption, [W]
+!	1-PIN	entering pressure, [psia]
+!	1-POUT	exit pressure, [psia]
+!	1-W	entering mixture fraction, for example, specific humdity of air, [lbh20/lbda]
+!	1-vol_flow_rate_out	ext volumetric flow rate, [ft^3/h]
+!	1-TWB	alternative air wet bulb input (attribute-i): IF 0.0 < Input <0.05, HUMIDITY RATIO; IF 0.05<=Input<=1, RELATIVE HUMIDITY; IF >1 or =<0, WET BULB TEMP OF AIR ENTERING THE HEAT EXCHANGER (F)
+!	1-TWBo	exit wet bulb temperature [F]
+!	1-HIN	inlet fluid enthalpy [Btu/lbm]
+!	1-HOUT	outlet fluid enthalpy [Btu/lbm]
+!	1-Power_Adj	Power multiplier [-]
+!	1-DP_Adj	static head multiplier multiplier [-]
+!	1-flow_Adj	flow rate multiplier [-]
+!	1-RPM	blade rotational speed [RPM]
+!	1-EFFICIENCY	fan or pump efficiency [-]
+!	1-VOLP1000	volumetric flow rate per 1000 RPM [cfm] or [gpm]
+!	1-Hper1000	Head per 1000 RPM; [inH2O] for air; psiD for coolant
+!	1-STATSPEED	stator speed [RPM]
+!	2-mass_flow_rate	mass flow rate [lbm/h]; for air, it is dry air mass flow
+!	2-DP	static head, [inH2O] for air stream
+!	2-Tin	entering fluid temperature, [F]
+!	2-Tout	exit fluid temperature, [F]
+!	2-vol_flow_rate_in	ent volumetric flow rate, [ft^3/h]
+!	2-Power	Power consumption, [W]
+!	2-PIN	entering pressure, [psia]
+!	2-POUT	exit pressure, [psia]
+!	2-W	entering mixture fraction, for example, specific humdity of air, [lbh20/lbda]
+!	2-vol_flow_rate_out	ext volumetric flow rate, [ft^3/h]
+!	2-TWB	alternative air wet bulb input (attribute-i): IF 0.0 < Input <0.05, HUMIDITY RATIO; IF 0.05<=Input<=1, RELATIVE HUMIDITY; IF >1 or =<0, WET BULB TEMP OF AIR ENTERING THE HEAT EXCHANGER (F)
+!	2-TWBo	exit wet bulb temperature [F]
+!	2-HIN	inlet fluid enthalpy [Btu/lbm]
+!	2-HOUT	outlet fluid enthalpy [Btu/lbm]
+!	2-Power_Adj	Power multiplier [-]
+!	2-DP_Adj	static head multiplier multiplier [-]
+!	2-flow_Adj	flow rate multiplier [-]
+!	2-RPM	blade rotational speed [RPM]
+!	2-EFFICIENCY	fan or pump efficiency [-]
+!	2-VOLP1000	volumetric flow rate per 1000 RPM [cfm] or [gpm]
+!	2-Hper1000	Head per 1000 RPM; [inH2O] for air; psiD for coolant
+!	2-STATSPEED	stator speed [RPM]
+!	3-MR	refrigerant mass flow rate [lb/h]
+!	3-H_in	entering enthalpy, [Btu/h]
+!	3-H_out	exit enthalpy, [Btu/h]
+!	3-P_in	inlet pressure, psi
+!	3-P_out	exit pressure, psi
+!	3-DP	pressure drop [psid]
+!	3-DH	enthalpy change [btu/lb]
+!	3-DQ	line heat transfer rate, [btu/lb-hr]
+!	3-DP_Adj	Pressure drop multiplier [-]
+!	3-DT	reference temperature drop at single phase specific heat, [R]
+!	3-CHARG	charge mass, [lbm]
+!	4-MR	refrigerant mass flow rate [lb/h]
+!	4-H_in	entering enthalpy, [Btu/h]
+!	4-H_out	exit enthalpy, [Btu/h]
+!	4-P_in	inlet pressure, psi
+!	4-P_out	exit pressure, psi
+!	4-DP	pressure drop [psid]
+!	4-DH	enthalpy change [btu/lb]
+!	4-DQ	line heat transfer rate, [btu/lb-hr]
+!	4-DP_Adj	Pressure drop multiplier [-]
+!	4-DT	reference temperature drop at single phase specific heat, [R]
+!	4-CHARG	charge mass, [lbm]
+!	5-TSIN	entering saturation temp [F], if super-critical, it is the same as the inlet pressure
+!	5-MR	refrigerant mass flow rate [lb/h]
+!	5-A_L	liquid phase area
+!	5-Q_V	vapor phase heat transfer rate [Btu/h]
+!	5-Q_TP	two-phase heat transfer rate [Btu/h]
+!	5-Q_L	liquid phase heat transfer rate [Btu/h]
+!	5-DP_R	refrigerant side DP [pisd]
+!	5-CHARGE	charge mass [lbm]
+!	5-AIR_FLOW_RATE	working fluid mass flow rate [lb/hr]
+!	5-DP_AIR	fluid dp; if air [inH2O]; else [psiD]
+!	5-TO_AIR	fluid exit temperature [F]
+!	5-TI_C	fluid entering temperature [F]
+!	5-HUMI	fluid entering concentration or air specific humidity
+!	5-P_ATM	fluild pressure [psia]; if air - atmospheric pressure
+!	5-POUT	refrigerant exit pressure [psia]
+!	5-PIN	 refrigerant entering pressure [psia]
+!	5-Q_TOT	total heat transfer rate [Btu/h]
+!	5-SPEC_EXT	exit subcooling, superheat dgree [F] or quality, quality is minus, if supercritical, the exit temp
+!	5-SHR	coil sensible heat tranfer ratio, output only
+!	5-HUMO	fluid exit concentration; if air - specific humidity
+!	5-HO_DRY	fluid side dry heat transfer coefficient
+!	5-HO_WET	fluid side wet (or subcooler) heat transfer coefficient
+!	5-UA_VAP	vapor phase UA
+!	5-UA_TP	two-phase UA
+!	5-UA_LIQ	liquid-phase UA
+!	6-TSIN	entering saturation temp [F], if super-critical, it is the same as the inlet pressure
+!	6-MR	refrigerant mass flow rate [lb/h]
+!	6-A_L	liquid phase area
+!	6-Q_V	vapor phase heat transfer rate [Btu/h]
+!	6-Q_TP	two-phase heat transfer rate [Btu/h]
+!	6-Q_L	liquid phase heat transfer rate [Btu/h]
+!	6-DP_R	refrigerant side DP [pisd]
+!	6-CHARGE	charge mass [lbm]
+!	6-AIR_FLOW_RATE	working fluid mass flow rate [lb/hr]
+!	6-DP_AIR	fluid dp; if air [inH2O]; else [psiD]
+!	6-TO_AIR	fluid exit temperature [F]
+!	6-TI_C	fluid entering temperature [F]
+!	6-HUMI	fluid entering concentration or air specific humidity
+!	6-P_ATM	fluild pressure [psia]; if air - atmospheric pressure
+!	6-POUT	refrigerant exit pressure [psia]
+!	6-PIN	 refrigerant entering pressure [psia]
+!	6-Q_TOT	total heat transfer rate [Btu/h]
+!	6-SPEC_EXT	exit subcooling, superheat dgree [F] or quality, quality is minus, if supercritical, the exit temp
+!	6-SHR	coil sensible heat tranfer ratio, output only
+!	6-HUMO	fluid exit concentration; if air - specific humidity
+!	6-HO_DRY	fluid side dry heat transfer coefficient
+!	6-HO_WET	fluid side wet (or subcooler) heat transfer coefficient
+!	6-UA_VAP	vapor phase UA
+!	6-UA_TP	two-phase UA
+!	6-UA_LIQ	liquid-phase UA
+!	7-MR	refrigerant mass flow rate [lb/h]
+!	7-H_in	entering enthalpy, [Btu/h]
+!	7-H_out	exit enthalpy, [Btu/h]
+!	7-P_in	inlet pressure, psi
+!	7-P_out	exit pressure, psi
+!	7-DP	pressure drop [psid]
+!	7-DH	enthalpy change [btu/lb]
+!	7-DQ	line heat transfer rate, [btu/lb-hr]
+!	7-DP_Adj	Pressure drop multiplier [-]
+!	7-DT	reference temperature drop at single phase specific heat, [R]
+!	7-CHARG	charge mass, [lbm]
+!	9-SysCharge	result of the equation
+!	10-INDCFM	result of the equation
+!	11-ODCFM	result of the equation
+!	12-TotPow	result of the equation
+!	13-NetCapa	result of the equation
+!	14-EER	result of the equation
+!	---	Output Data	---
+Status	0:T_Suc_Sat	0:T_Dis_Sat	0:H_Suc	0:H_Dis	0:Mr	0:Power	0:Power_Adj	0:Mr_Adj	0:Heat_Gain_Ratio	0:P_suc	0:P_dis	0:Mr_adj_sup	0:Superheat	0:S_suc	0:H_dis_s	0:VOL_suc	0:DISPLACEVOL	0:RPM	0:ETA_S	0:ETA_V	0:dischargTemp	0:PRESSURE_RATIO	0:SuctTemp	1:mass_flow_rate	1:DP	1:Tin	1:Tout	1:vol_flow_rate_in	1:Power	1:PIN	1:POUT	1:W	1:vol_flow_rate_out	1:TWB	1:TWBo	1:HIN	1:HOUT	1:Power_Adj	1:DP_Adj	1:flow_Adj	1:RPM	1:EFFICIENCY	1:VOLP1000	1:Hper1000	1:STATSPEED	2:mass_flow_rate	2:DP	2:Tin	2:Tout	2:vol_flow_rate_in	2:Power	2:PIN	2:POUT	2:W	2:vol_flow_rate_out	2:TWB	2:TWBo	2:HIN	2:HOUT	2:Power_Adj	2:DP_Adj	2:flow_Adj	2:RPM	2:EFFICIENCY	2:VOLP1000	2:Hper1000	2:STATSPEED	3:MR	3:H_in	3:H_out	3:P_in	3:P_out	3:DP	3:DH	3:DQ	3:DP_Adj	3:DT	3:CHARG	4:MR	4:H_in	4:H_out	4:P_in	4:P_out	4:DP	4:DH	4:DQ	4:DP_Adj	4:DT	4:CHARG	5:TSIN	5:MR	5:A_L	5:Q_V	5:Q_TP	5:Q_L	5:DP_R	5:CHARGE	5:AIR_FLOW_RATE	5:DP_AIR	5:TO_AIR	5:TI_C	5:HUMI	5:P_ATM	5:POUT	5:PIN	5:Q_TOT	5:SPEC_EXT	5:SHR	5:HUMO	5:HO_DRY	5:HO_WET	5:UA_VAP	5:UA_TP	5:UA_LIQ	6:TSIN	6:MR	6:A_L	6:Q_V	6:Q_TP	6:Q_L	6:DP_R	6:CHARGE	6:AIR_FLOW_RATE	6:DP_AIR	6:TO_AIR	6:TI_C	6:HUMI	6:P_ATM	6:POUT	6:PIN	6:Q_TOT	6:SPEC_EXT	6:SHR	6:HUMO	6:HO_DRY	6:HO_WET	6:UA_VAP	6:UA_TP	6:UA_LIQ	7:MR	7:H_in	7:H_out	7:P_in	7:P_out	7:DP	7:DH	7:DQ	7:DP_Adj	7:DT	7:CHARG	9:SysCharge	10:INDCFM	11:ODCFM	12:TotPow	13:NetCapa	14:EER
+P	51.0583	114.705	186.307	200.787	320.39	1510.81	1	1	0.9	160.085	404.291	1.01686	14.1061	0.435243	197.588	0.398192	0.000501302	4500	0.701149	0.942544	165.425	2.52547	65.1644	8229.11	0.1	108.482	108.703	120000	130	14.6	14.6036	0.0071	120017	69.7761	69.8452	33.9844	34.0384	1	1	1	1140	0.180877	1754.39	0.0769468	1200	2711.42	0.4	56.0888	57.376	36000	250	14.6	14.6145	0.0089747	36054.2	54.9421	55.4656	23.2319	23.5467	1	1	1	1140	0.112867	526.316	0.307787	1200	320.39	200.787	198.735	404.291	403.291	1	2.05197	657.431	17.9576	4.05	0.0152855	320.39	185.257	186.307	163.085	160.085	3	-1.04925	-336.168	10.1988	-3.53	0.236193	114.515	320.39	0.134857	5394.86	19769.7	1874.06	1.26637	0.698624	8229.11	0.0130896	108.482	95	0.0071	14.6	402.027	403.291	27031.2	10	1	0.0071	19.0109	19.0109	230.274	1721.27	179.52	52.3236	320.39	0	-1597.87	-21125.6	3.04598	0.339143	0.534477	2711.42	0.00192522	56.0888	80	0.01128	14.6	163.085	163.424	-22756	10	0.695084	0.0089747	10.0683	7.74483	222.847	2021.96	0	320.39	114.342	114.342	402.027	401.027	1	-5.53718e-22	-1.77405e-19	0.600704	0	3.22706	4.71164	600	2000	1890.81	21903	11.5839

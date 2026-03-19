@@ -1,0 +1,24 @@
+! Comment line to describe the system - to be inputted
+C	0	38	n	10001	0	0		!	DischargeLine	LINE LOSS MODEL W HEAT TRANSFER AND PRESSURE DROP CALCULATIONS; CONSIDERING VISCOSITY VARIATION
+P	0	d	Length	0		5.13			!	Equivalent line length [ft]
+P	1	d	ID	0		0.0521			!	inside diameter [ft]
+P	2	d	DP	0		-250			!	reference line pressure drop; [psiD]; if < -100.0; mean using turbulent flow DP calculation.
+P	3	d	Mf_Refe	0		100			!	reference mass flow rate for getting the reference line pressure drop; [lbm/hr]
+P	4	d	N	0		2			!	exponential number of pressure drop as a function of Reynolds number
+P	5	i	Substance	0		-1			!	-1 - refrigerant; 0 - air; 1 - water; 2- glycol
+P	6	d	Vis_refer	0		1.00E-05			!	reference dynamic viscosity; [lb/ft/h]
+P	7	d	InVol	0		6.90E-02			!	inner volume for charge calculation [ft^3]
+V	0	i	MR	0	y	1500			!	refrigerant mass flow rate [lb/h]
+V	1	i	H_in	0	y	243			!	entering enthalpy; [Btu/h]
+V	2	r	H_out	0	y				!	exit enthalpy; [Btu/h]
+V	3	i	P_in	0	y	422			!	inlet pressure; psi
+V	4	r	P_out	0	y				!	exit pressure; psi
+V	5	i	DP	0	y	3			!	pressure drop [psid]
+V	6	r	DH	0	y	1.6			!	enthalpy change [btu/lb]
+V	7	r	DQ	0	y				!	line heat transfer rate; [btu/lb-hr]
+V	8	g	DP_Adj	0	y	1			!	Pressure drop multiplier [-]
+V	9	i	DT	0	y	4.05			!	reference temperature drop at single phase specific heat; [R]
+V	10	o	CHARG	0	y				!	CHARGE MASS IN LINE [LBM]
+{	End of Components	}							!	end of components and equations
+!	" After this row, input batch run inputs, starting with 'B'"
+O	0;5	0;10	0;7	0;9	0;8			! 	output variable shortlist

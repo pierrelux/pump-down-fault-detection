@@ -1,0 +1,40 @@
+!	---	Component List	---	System	REFR0: 	R410A	REFR1: 	R410A
+!	0	EnterH
+!	1	Evaporator
+!	---	Output Variable List	---
+!	0-P	Pressure [psia]
+!	0-H	Enthalpy [Btu/lb]
+!	0-T	Temperature [F]
+!	0-X	Quality [-]
+!	1-TSIN	"entering saturation temp [F], if super-critical, it is the same as the inlet pressure"
+!	1-HIN	entering enthalpy [btu/lb]
+!	1-HOUT	exit enthalpy [Btu/lb]
+!	1-MR	refrigerant mass flow rate [lb/h]
+!	1-A_V	vapor phase area
+!	1-A_TP	two-phase area
+!	1-A_L	liquid phase area
+!	1-Q_V	vapor phase heat transfer rate [Btu/h]
+!	1-Q_TP	two-phase heat transfer rate [Btu/h]
+!	1-Q_L	liquid phase heat transfer rate [Btu/h]
+!	1-DP_R	refrigerant side DP [pisd]
+!	1-CHARGE	charge mass [lbm]
+!	1-AIR_FLOW_RATE	working fluid mass flow rate [lb/hr]
+!	1-DP_AIR	fluid dp; if air [inH2O]; else [psiD]
+!	1-TO_AIR	fluid exit temperature [F]
+!	1-TI_C	fluid entering temperature [F]
+!	1-HUMI	fluid entering concentration or air specific humidity
+!	1-P_ATM	fluild pressure [psia]; if air - atmospheric pressure
+!	1-POUT	refrigerant exit pressure [psia]
+!	1-PIN	 refrigerant entering pressure [psia]
+!	1-Q_TOT	total heat transfer rate [Btu/h]
+!	1-SPEC_EXT	"exit subcooling, superheat dgree [F] or quality, quality is minus, if supercritical, the exit temp"
+!	1-SHR	"coil sensible heat tranfer ratio, output only"
+!	1-HUMO	fluid exit concentration; if air - specific humidity
+!	1-HODRY	fluid side dry heat transfer coefficient
+!	1-HOWET	fluid side wet (or subcooler) heat transfer coefficient
+!	1-UAV	vapor phase UA
+!	1-UATP	two-phase UA
+!	1-UAL	liquid-phase UA
+!	---	Output Data	---
+Status	0:P	0:H	0:T	0:X	1:TSIN	1:HIN	1:HOUT	1:MR	1:A_V	1:A_TP	1:A_L	1:Q_V	1:Q_TP	1:Q_L	1:DP_R	1:CHARGE	1:AIR_FLOW_RATE	1:DP_AIR	1:TO_AIR	1:TI_C	1:HUMI	1:P_ATM	1:POUT	1:PIN	1:Q_TOT	1:SPEC_EXT	1:SHR	1:HUMO	1:HODRY	1:HOWET	1:UAV	1:UATP	1:UAL
+P	400	112.524	100	0	44.3885	112.524	184.717	150	0.363886	0.636114	0	-1058.5	-9772.38	1.8411	0.131174	0.591623	802	0.000465016	45.9678	80	0.01128	14.6	143.196	143.327	-10837.9	10	0.615253	0.00652626	5.32696	4.09766	221.201	1065.14	0

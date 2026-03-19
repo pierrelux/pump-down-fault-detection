@@ -1,0 +1,352 @@
+! Comment line to describe the system - to be inputted
+C	0	41	n	10001				!	COMP	VARIABLE SPEED ARI TEN COEFF MODEL; TSAT_SUC & TSAT_DISCARGE IN [F]
+P	0	d	Stand_Sup	0		20			!	positive-standard suction superheat; negative-absolulate return gas temperature [F]
+P	1	s	Map_File	0		Comp10Map.csv			!	replace these text with map file string
+P	2	i	USEALTREFR	0		1			!	1=use alternative refrigerant map; 0=not used
+P	3	i	USEPRESS	0		1			!	1=get efficiencies based on pressure; 0=get efficiencies based on sat temp
+V	0	g	T_Suc_Sat	0	y	50			!	Compressor suction saturation T [F]
+V	1	g	T_Dis_Sat	0	y	110			!	Compressor discharge saturation T [F]
+V	2	r	H_Suc	0	y				!	Compressor suction H [Btu/lbm]
+V	3	r	H_Dis	0	y				!	Compressor discharge H [Btu/lbm]
+V	4	r	Mr	0	y				!	Compressor mass flow rate [lbm/h]
+V	5	r	Power	0	y				!	Compressor power [W]
+V	6	i	Power_Adj	0	y	1			!	Compressor power multiplier [-]
+V	7	i	Mr_Adj	0	y	1			!	Compressor flow rate multiplier [-]
+V	8	i	Heat_Gain_Ratio	0	y	0.9			!	Compressor heat gain ratio [-]
+V	9	r	P_suc	0	y				!	Compressor suction pressure [psia]
+V	10	r	P_dis	0	y				!	Compressor discharge pressure [psia]
+V	11	r	Mr_adj_sup	0	y				!	"Compressor flow rate multiplier [-], considering differed suction state"
+V	12	g	Superheat	0	y	20			!	"superheat dgree, positive-superheat, negative-quality"
+V	13	r	S_suc	0	y				!	"compressor suction entropy, [Btu/lb/F]"
+V	14	r	H_dis_s	0	y				!	"isentropic discharge enthalpy, [Btu/lb/F]"
+V	15	r	VOL_suc	0	y				!	suction specific volume [ft^3/lb]
+V	16	i	DISPLACEVOL	0	y	0.000501302			!	"displacement volume, [ft^3/Rev]"
+V	17	i	RPM	0	y	4500			!	"rotational speed, [rpm]"
+V	18	t	ETA_S	0	y	0.7	0.4	1	!	"isentropic efficiency, with assuming zero shell loss ratio [-]"
+V	19	t	ETA_V	0	y	0.9			!	"volumetric efficiency, [-]"
+V	20	r	dischargTemp	0	y				!	discharge temperature [F]
+V	21	o	PRESSURE_RATIO	0	y				!	"compression pressure ratio, [-]"
+V	22	o	SuctTemp	0	y				!	Compressor suction temperature [F]
+C	1	94	n	10001				!	CondFan	VARIABLE SPEED FAN OR PUMP EFFICIENCY-BASED MODEL
+P	0	i	Substance	0		0			!	0: air; 1: water; 2: propylene glycol-water; 3: ethylene glycol-water; 4: sodium  chloride-water; 5: calcium chloride-water; 6: methyl alcohol-water; 7: ethyl alcohol-water mixture
+P	1	d	HeatRatio	0		1			!	fan heat ratio added to main stream
+P	2	s	CoefficientFile	0		NNN			!	data file containing curve-fit coefficients
+V	0	r	mass_flow_rate	0	y				!	"mass flow rate [lbm/h]; for air, it is dry air mass flow"
+V	1	i	DP	0	y	0.1			!	"static head, [inH2O] for air stream; [psiD] for coolant and refrigerant"
+V	2	g	Tin	0	y	100			!	"entering fluid temperature, [F]"
+V	3	r	Tout	0	y				!	"exit fluid temperature, [F]"
+V	4	i	vol_flow_rate_in	0	y	120000			!	"ent volumetric flow rate, [ft^3/h]"
+V	5	i	Power	0	y	130.0			!	"Power consumption, [W]"
+V	6	g	PIN	0	y	14.7			!	"entering pressure, [psia]"
+V	7	r	POUT	0	y				!	"exit pressure, [psia]"
+V	8	r	W	0	y	0.014			!	"entering mixture fraction, for example, specific humdity of air, [lbh20/lbda]"
+V	9	r	vol_flow_rate_out	0	y				!	"ext volumetric flow rate, [ft^3/h]"
+V	10	o	TWB	0	y				!	"alternative air wet bulb input (attribute-i): IF 0.0 < Input <0.05, HUMIDITY RATIO; IF 0.05<=Input<=1, RELATIVE HUMIDITY; IF >1 or =<0, WET BULB TEMP OF AIR ENTERING THE HEAT EXCHANGER (F)"
+V	11	o	TWBo	1	y				!	outlet air wet bulb temperature [F]
+V	12	r	HIN	0	y				!	inlet enthalpy [Btu/lbm]
+V	13	r	HOUT	0	y				!	outlet enthalpy [Btu/lbm]
+V	14	i	Power_Adj	0	y	1			!	Power multiplier [-]
+V	15	i	DP_Adj	0	y	1			!	static head multiplier multiplier [-]
+V	16	i	flow_Adj	0	y	1			!	flow rate multiplier [-]
+V	17	i	RPM	0	y	1140			!	blade rotational speed [RPM]
+V	18	g	EFFICIENCY	0	y	0.3			!	fan or pump efficiency [-]
+V	19	g	VOLP1000	0	y	13155.21			!	volumetric flow rate per 1000 RPM; [cfm] for air; [GPM] for water and refrigerant
+V	20	g	Hper1000	0	y	1.0			!	Head per 1000 RPM; [inH2O] for air; [psiD] for coolant and refrigerant
+V	21	g	STATSPEED	0	y	1200			!	Motor stator speed [RPM]
+C	2	94	n	10001				!	EvapFan	VARIABLE SPEED FAN OR PUMP EFFICIENCY-BASED MODEL
+P	0	i	Substance	0		0			!	0: air; 1: water; 2: propylene glycol-water; 3: ethylene glycol-water; 4: sodium  chloride-water; 5: calcium chloride-water; 6: methyl alcohol-water; 7: ethyl alcohol-water mixture
+P	1	d	HeatRatio	0		1			!	fan heat ratio added to main stream
+P	2	s	CoefficientFile	0		NNN			!	data file containing curve-fit coefficients
+V	0	r	mass_flow_rate	0	y				!	"mass flow rate [lbm/h]; for air, it is dry air mass flow"
+V	1	i	DP	0	y	0.4			!	"static head, [inH2O] for air stream; [psiD] for coolant and refrigerant"
+V	2	g	Tin	0	y	60			!	"entering fluid temperature, [F]"
+V	3	r	Tout	0	y				!	"exit fluid temperature, [F]"
+V	4	i	vol_flow_rate_in	0	y	36000			!	"ent volumetric flow rate, [ft^3/h]"
+V	5	t	Power	0	y	250.0			!	"Power consumption, [W]"
+V	6	g	PIN	0	y	14.7			!	"entering pressure, [psia]"
+V	7	r	POUT	0	y				!	"exit pressure, [psia]"
+V	8	r	W	0	y	0.011			!	"entering mixture fraction, for example, specific humdity of air, [lbh20/lbda]"
+V	9	r	vol_flow_rate_out	0	y				!	"ext volumetric flow rate, [ft^3/h]"
+V	10	o	TWB	0	y				!	"alternative air wet bulb input (attribute-i): IF 0.0 < Input <0.05, HUMIDITY RATIO; IF 0.05<=Input<=1, RELATIVE HUMIDITY; IF >1 or =<0, WET BULB TEMP OF AIR ENTERING THE HEAT EXCHANGER (F)"
+V	11	o	TWBo	1	y				!	outlet air wet bulb temperature [F]
+V	12	r	HIN	0	y				!	inlet enthalpy [Btu/lbm]
+V	13	r	HOUT	0	y				!	outlet enthalpy [Btu/lbm]
+V	14	i	Power_Adj	0	y	1			!	Power multiplier [-]
+V	15	i	DP_Adj	0	y	1			!	static head multiplier multiplier [-]
+V	16	i	flow_Adj	0	y	1			!	flow rate multiplier [-]
+V	17	i	RPM	0	y	1140			!	blade rotational speed [RPM]
+V	18	g	EFFICIENCY	0	y	0.3			!	fan or pump efficiency [-]
+V	19	g	VOLP1000	0	y	13155.21			!	volumetric flow rate per 1000 RPM; [cfm] for air; [GPM] for water and refrigerant
+V	20	g	Hper1000	0	y	1.0			!	Head per 1000 RPM; [inH2O] for air; [psiD] for coolant and refrigerant
+V	21	g	STATSPEED	0	y	1200			!	Motor stator speed [RPM]
+C	3	38	n	10001	0	0		!	DischargeLine	"LINE LOSS MODEL W HEAT TRANSFER AND PRESSURE DROP CALCULATIONS, CONSIDERING VISCOSITY VARIATION"
+P	0	d	Length	0		1			!	Equivalent line length [ft]
+P	1	d	ID	0		0.036333333			!	inside diameter [ft]
+P	2	d	DP	0		-250.00			!	"reference line pressure drop, [psiD]; if < -100.0, mean using turbulent flow DP calculation. "
+P	3	d	Mf_Refe	0		100			!	"reference mass flow rate for getting the reference line pressure drop, [lbm/hr]"
+P	4	d	N	0		2			!	exponential number of pressure drop as a function of Reynolds number
+P	5	i	Substance	0		-1			!	"-1 - refrigerant, 0 - air, 1 - water, 2- glycol "
+P	6	d	Vis_refer	0		1.00E-05			!	"reference dynamic viscosity, [lb/ft/h]"
+P	7	d	InVol	0		2.63E-03			!	inner volume for charge calculation [ft^3]
+V	0	r	MR	0	y				!	refrigerant mass flow rate [lb/h]
+V	1	r	H_in	0	y				!	"entering enthalpy, [Btu/h]"
+V	2	r	H_out	0	y				!	"exit enthalpy, [Btu/h]"
+V	3	r	P_in	0	y				!	"inlet pressure, psi"
+V	4	r	P_out	0	y				!	"exit pressure, psi"
+V	5	i	DP	0	y	1			!	pressure drop [psid]
+V	6	g	DH	0	y	1.6			!	enthalpy change [btu/lb]
+V	7	r	DQ	0	y				!	"line heat transfer rate, [btu/lb-hr]"
+V	8	r	DP_Adj	0	y				!	Pressure drop multiplier [-]
+V	9	i	DT	0	y	4.05			!	"reference temperature drop at single phase specific heat, [R]"
+V	10	o	CHARG	0	y				!	CHARGE MASS IN LINE [LBM]
+C	4	38	n	10001	0	0		!	SuctionLine	"LINE LOSS MODEL W HEAT TRANSFER AND PRESSURE DROP CALCULATIONS, CONSIDERING VISCOSITY VARIATION"
+P	0	d	Length	0		20.4			!	Equivalent line length [ft]
+P	1	d	ID	0		0.056666667			!	inside diameter [ft]
+P	2	d	DP	0		-250			!	"reference line pressure drop, [psiD]; if < -100.0, mean using turbulent flow DP calculation. "
+P	3	d	Mf_Refe	0		100			!	"reference mass flow rate for getting the reference line pressure drop, [lbm/hr]"
+P	4	d	N	0		2			!	exponential number of pressure drop as a function of Reynolds number
+P	5	i	Substance	0		-1			!	"-1 - refrigerant, 0 - air, 1 - water, 2- glycol "
+P	6	d	Vis_refer	0		1.00E-05			!	"reference dynamic viscosity, [lb/ft/h]"
+P	7	d	InVol	0		9.24E-02			!	inner volume for charge calculation [ft^3]
+V	0	r	MR	0	y				!	refrigerant mass flow rate [lb/h]
+V	1	r	H_in	0	y				!	"entering enthalpy, [Btu/h]"
+V	2	r	H_out	0	y				!	"exit enthalpy, [Btu/h]"
+V	3	r	P_in	0	y				!	"inlet pressure, psi"
+V	4	r	P_out	0	y				!	"exit pressure, psi"
+V	5	i	DP	0	y	3			!	pressure drop [psid]
+V	6	g	DH	0	y	-1.2			!	enthalpy change [btu/lb]
+V	7	r	DQ	0	y				!	"line heat transfer rate, [btu/lb-hr]"
+V	8	r	DP_Adj	0	y				!	Pressure drop multiplier [-]
+V	9	i	DT	0	y	-3.53			!	"reference temperature drop at single phase specific heat, [R]"
+V	10	o	CHARG	0	y				!	CHARGE MASS IN LINE [LBM]
+C	5	42	n	10001				!	Condenser	SINGLE-ROW MICROCHANNEL COIL MODEL
+P	0	s	Dummy	0		N			!	input N directly
+P	1	i	Dummy	0		100			!	dummy obsolete input
+P	2	i	Evap_or_Cond	0		0			!	"0 means condenser, other value mean evaporator"
+P	3	i	dummy	0		0			!	"dummy, always 0"
+P	4	i	FINTYP	0		1			!	Fin type: now can only be multi-louver
+P	5	d	FINLEN	0		0.287			!	"Fin Length of a single fin, [in]"
+P	6	d	FINDEP	0		0.629			!	"Fin Depth of a single fin, [in]"
+P	7	d	FINTHICK	0		0.0035			!	"Fin thickness, [in]"
+P	8	d	FINDENSITY	0		216			!	"Fin density, fins/foot"
+P	9	d	FINCONDUCT	0		111			!	"Fin material conductance, [Btu/hr-ft-F]"
+P	10	i	HOLENUM	0		14			!	port count in a microchannel tube
+P	11	i	TUBNUM	0		65			!	Total tube count
+P	12	i	TUBTYP	0		-11			!	"Tube type, -10 micro-round tube; -11 - micro-rectang; -12 - mico-triang; -13 - micro-Trapezoidal"
+P	13	d	TUBLENGTH	0		46.67			!	"Tube length, [in]"
+P	14	d	CASELENGTH	0		46.67			!	"Casing length, i.e. finned tube length, [in]"
+P	15	d	TUB_H	0		0.088			!	"Tube Height (i.e. Thickness), [in]"
+P	16	d	TUB_W	0		0.629			!	"Tube width, [in]"
+P	17	d	TUBWTHICK	0		0.0283			!	"Equivalent tube Wall Thickness for calculating wall resistance, [in]"
+P	18	d	TUBCONDUCT	0		111			!	"Tube Wall Conductance, [Btu/hr-ft-F]"
+P	19	d	Pt	0		0.375			!	"Tube Pitch Perpendicular to Airflow Direction, [in]"
+P	20	d	Pr	0		0.629			!	"Tube Pitch along Airflow Direction, [in]"
+P	21	d	RADBEND	0		0.5			!	"Radius of Return Bend, [in]"
+P	22	i	ROWNUM	0		1			!	Row Number
+P	23	d	HTADJ_AIR_D	0		1.22			!	Air Side Heat Transfer Multiplier -Dry Heat Transfer
+P	24	d	HTADJ_REF	0		0.94			!	Refrigerant Side Heat Tranfer Multiplier
+P	25	d	DPADJ_REF	0		1			!	Refrigerant Side Pressure Drop Multiplier
+P	26	d	HTADJ_AIR_S	0		1.22			!	Air Side Heat Transfer Multiplier for Subcooler Only
+P	27	d	HTADJ_REF_S	0		0.94			!	Refrigerant Side Heat Tranfer Multiplier for Subcooler Only
+P	28	d	DPADJ_REF_S	0		1			!	Refrigerant Side Pressure Drop Multiplier for subcooler Only
+P	29	d	HTADJ_AIR_W	0		1.22			!	Air Side Heat Transfer Multiplier -Wet Heat Transfer
+P	30	d	DPADJ_AIR_D	0		1			!	Air Side Pressure Drop Multiplier - Dry Coil
+P	31	d	DPADJ_AIR_W	0		1			!	Air Side Pressure Drop Multiplier - Wet Coil
+P	32	d	FOUL	0		0			!	Fouling Factor
+P	33	d	Dhi	0		0.0315			!	"Micro-channel inside hydraulic diameter for a single port, [in]"
+P	34	d	Theta	0		0			!	"Angle of triangular and trapezoidal shapes, [degree]"
+P	35	d	PortA	0		0.0315			!	"Port dimension A, [in]"
+P	36	d	PortB	0		0.0315			!	"Port dimension B, [in]"
+P	37	d	PortH	0		0			!	"Port dimension height, [in]"
+P	38	i	ExtFins	0		1			!	"whether boundary tubes have extruded fins, 0 -false, other number -true"
+P	39	d	CIRCSCALE	0		1			!	scaling factor for HX circuits
+P	40	i	SEGNUM	0		50			!	segment number of each tube
+P	41	i	PASSNUM	0		2			!	"number of passes in the coil, <= 10"
+P	42	i	TUBNSTEP1	0		47			!	"tube number in first step, in condenser flow direction"
+P	43	i	TUBNSTEP2	0		18			!	"tube number in second step, in condenser flow direction"
+P	44	i	TUBNSTEP3	0		0			!	"tube number in third step, in condenser flow direction"
+P	45	i	TUBNSTEP4	0		0			!	"tube number in fourth step, in condenser flow direction"
+P	46	i	TUBNSTEP5	0		0			!	"tube number in fifth step, in condenser flow direction"
+P	47	i	TUBNSTEP6	0		0			!	"tube number in sixth step, in condenser flow direction"
+P	48	i	TUBNSTEP7	0		0			!	"tube number in seventh step, in condenser flow direction"
+P	49	i	TUBNSTEP8	0		0			!	"tube number in eighth step, in condenser flow direction"
+P	50	i	TUBNSTEP9	0		0			!	"tube number in ninth step, in condenser flow direction"
+P	51	i	TUBNSTEP10	0		0			!	"tube number in tenth step, in condenser flow direction"
+V	0	r	TSIN	0	y				!	entering saturation temp [F]
+V	1	r	HIN	0	n				!	entering enthalpy [btu/lb]
+V	2	r	HOUT	0	n				!	exit enthalpy [Btu/lb]
+V	3	r	MR	0	y				!	refrigerant mass flow rate [lb/h]
+V	4	r	A_V	0	n				!	vapor phase area
+V	5	r	A_TP	0	n				!	two-phase area
+V	6	r	A_L	0	y				!	liquid phase area
+V	7	r	Q_V	0	y				!	vapor phase heat transfer rate [Btu/h]
+V	8	r	Q_TP	0	y				!	two-phase heat transfer rate [Btu/h]
+V	9	r	Q_L	0	y				!	liquid phase heat transfer rate [Btu/h]
+V	10	r	DP_R	0	y				!	refrigerant side DP [pisd]
+V	11	r	CHARGE	0	y				!	charge mass [lbm]
+V	12	r	AIR_FLOW_RATE	0	y				!	[lb/hr]
+V	13	r	DP_AIR	0	y				!	air side dp [inH2O]
+V	14	r	TO_AIR	0	y				!	air exit temperature [F]
+V	15	i	TI_C	0	y	95			!	air entering temperature [F]
+V	16	i	HUMI	0	y	0.0071			!	air entering specific humidity
+V	17	i	P_ATM	0	y	14.6			!	atmospheric pressure [psia]
+V	18	r	POUT	0	y				!	refrigerant exit pressure [psia]
+V	19	r	PIN	0	y				!	 refrigerant entering pressure [psia]
+V	20	r	Q_TOT	0	y				!	total heat transfer rate [Btu/h]
+V	21	i	SPEC_EXT	0	y	10			!	"coil exit subcooling, superheat dgree [F] or quality, quality is minus"
+V	22	o	SHR	0	y				!	"coil sensible heat tranfer ratio, output only"
+V	23	r	HUMO	0	y				!	air exit specific humidity
+V	24	o	HO_DRY	0	y				!	fluid side dry heat transfer coefficient
+V	25	o	HO_WET	0	y				!	fluid side wet (or subcooler) heat transfer coefficient
+V	26	o	UA_VAP	0	y				!	vapor phase UA
+V	27	o	UA_TP	0	y				!	two-phase UA
+V	28	o	UA_LIQ	0	y				!	liquid-phase UA
+C	6	42	n	10001				!	Evaporator	SINGLE-ROW MICROCHANNEL COIL MODEL
+P	0	s	Dummy	0		N			!	input N directly
+P	1	i	Dummy	0		100			!	dummy obsolete input
+P	2	i	Evap_or_Cond	0		1			!	"0 means condenser, other value mean evaporator"
+P	3	i	dummy	0		0			!	"dummy, always 0"
+P	4	i	FINTYP	0		1			!	Fin type: now can only be multi-louver
+P	5	d	FINLEN	0		0.3			!	"Fin Length of a single fin, [in]"
+P	6	d	FINDEP	0		1			!	"Fin Depth of a single fin, [in]"
+P	7	d	FINTHICK	0		0.003503931			!	"Fin thickness, [in]"
+P	8	d	FINDENSITY	0		240			!	"Fin density, fins/foot"
+P	9	d	FINCONDUCT	0		111			!	"Fin material conductance, [Btu/hr-ft-F]"
+P	10	i	HOLENUM	0		26			!	port count in a microchannel tube
+P	11	i	TUBNUM	0		80			!	Total tube count
+P	12	i	TUBTYP	0		-11			!	"Tube type, -10 micro-round tube; -11 - micro-rectang; -12 - mico-triang; -13 - micro-Trapezoidal"
+P	13	d	TUBLENGTH	0		45			!	"Tube length, [in]"
+P	14	d	CASELENGTH	0		45			!	"Casing length, i.e. finned tube length, [in]"
+P	15	d	TUB_H	0		0.051181			!	"Tube Height (i.e. Thickness), [in]"
+P	16	d	TUB_W	0		1			!	"Tube width, [in]"
+P	17	d	TUBWTHICK	0		0.01			!	"Equivalent tube Wall Thickness for calculating wall resistance, [in]"
+P	18	d	TUBCONDUCT	0		111			!	"Tube Wall Conductance, [Btu/hr-ft-F]"
+P	19	d	Pt	0		0.351181			!	"Tube Pitch Perpendicular to Airflow Direction, [in]"
+P	20	d	Pr	0		1			!	"Tube Pitch along Airflow Direction, [in]"
+P	21	d	RADBEND	0		0.5			!	"Radius of Return Bend, [in]"
+P	22	i	ROWNUM	0		1			!	Row Number
+P	23	d	HTADJ_AIR_D	0		1.3			!	Air Side Heat Transfer Multiplier -Dry Heat Transfer
+P	24	d	HTADJ_REF	0		1			!	Refrigerant Side Heat Tranfer Multiplier
+P	25	d	DPADJ_REF	0		1.5			!	Refrigerant Side Pressure Drop Multiplier
+P	26	d	HTADJ_AIR_S	0		1.3			!	Air Side Heat Transfer Multiplier for Subcooler Only
+P	27	d	HTADJ_REF_S	0		1			!	Refrigerant Side Heat Tranfer Multiplier for Subcooler Only
+P	28	d	DPADJ_REF_S	0		1.5			!	Refrigerant Side Pressure Drop Multiplier for subcooler Only
+P	29	d	HTADJ_AIR_W	0		1			!	Air Side Heat Transfer Multiplier -Wet Heat Transfer
+P	30	d	DPADJ_AIR_D	0		1			!	Air Side Pressure Drop Multiplier - Dry Coil
+P	31	d	DPADJ_AIR_W	0		1			!	Air Side Pressure Drop Multiplier - Wet Coil
+P	32	d	FOUL	0		0			!	Fouling Factor
+P	33	d	Dhi	0		0.0263			!	"Micro-channel inside hydraulic diameter for a single port, [in]"
+P	34	d	Theta	0		0			!	"Angle of triangular and trapezoidal shapes, [degree]"
+P	35	d	PortA	0		0.027559			!	"Port dimension A, [in]"
+P	36	d	PortB	0		0.0251968			!	"Port dimension B, [in]"
+P	37	d	PortH	0		0			!	"Port dimension height, [in]"
+P	38	i	ExtFins	0		1			!	"whether boundary tubes have extruded fins, 0 -false, other number -true"
+P	39	d	CIRCSCALE	0		1			!	scaling factor for HX circuits
+P	40	i	SEGNUM	0		50			!	segment number of each tube
+P	41	i	PASSNUM	0		1			!	"number of passes in the coil, <= 10"
+P	42	i	TUBNSTEP1	0		80			!	"tube number in first step, in condenser flow direction"
+P	43	i	TUBNSTEP2	0		0			!	"tube number in second step, in condenser flow direction"
+P	44	i	TUBNSTEP3	0		0			!	"tube number in third step, in condenser flow direction"
+P	45	i	TUBNSTEP4	0		0			!	"tube number in fourth step, in condenser flow direction"
+P	46	i	TUBNSTEP5	0		0			!	"tube number in fifth step, in condenser flow direction"
+P	47	i	TUBNSTEP6	0		0			!	"tube number in sixth step, in condenser flow direction"
+P	48	i	TUBNSTEP7	0		0			!	"tube number in seventh step, in condenser flow direction"
+P	49	i	TUBNSTEP8	0		0			!	"tube number in eighth step, in condenser flow direction"
+P	50	i	TUBNSTEP9	0		0			!	"tube number in ninth step, in condenser flow direction"
+P	51	i	TUBNSTEP10	0		0			!	"tube number in tenth step, in condenser flow direction"
+V	0	r	TSIN	0	y				!	entering saturation temp [F]
+V	1	r	HIN	0	n				!	entering enthalpy [btu/lb]
+V	2	r	HOUT	0	n				!	exit enthalpy [Btu/lb]
+V	3	r	MR	0	y				!	refrigerant mass flow rate [lb/h]
+V	4	r	A_V	0	n				!	vapor phase area
+V	5	r	A_TP	0	n				!	two-phase area
+V	6	r	A_L	0	y				!	liquid phase area
+V	7	r	Q_V	0	y				!	vapor phase heat transfer rate [Btu/h]
+V	8	r	Q_TP	0	y				!	two-phase heat transfer rate [Btu/h]
+V	9	r	Q_L	0	y				!	liquid phase heat transfer rate [Btu/h]
+V	10	r	DP_R	0	y				!	refrigerant side DP [pisd]
+V	11	r	CHARGE	0	y				!	charge mass [lbm]
+V	12	r	AIR_FLOW_RATE	0	y				!	[lb/hr]
+V	13	r	DP_AIR	0	y				!	air side dp [inH2O]
+V	14	r	TO_AIR	0	y				!	air exit temperature [F]
+V	15	i	TI_C	0	y	80			!	air entering temperature [F]
+V	16	i	HUMI	0	y	0.01128			!	air entering specific humidity
+V	17	i	P_ATM	0	y	14.6			!	atmospheric pressure [psia]
+V	18	r	POUT	0	y				!	refrigerant exit pressure [psia]
+V	19	r	PIN	0	y				!	 refrigerant entering pressure [psia]
+V	20	r	Q_TOT	0	y				!	total heat transfer rate [Btu/h]
+V	21	i	SPEC_EXT	0	y	10			!	"coil exit subcooling, superheat dgree [F] or quality, quality is minus"
+V	22	o	SHR	0	y				!	"coil sensible heat tranfer ratio, output only"
+V	23	r	HUMO	0	y				!	air exit specific humidity
+V	24	o	HO_DRY	0	y				!	fluid side dry heat transfer coefficient
+V	25	o	HO_WET	0	y				!	fluid side wet (or subcooler) heat transfer coefficient
+V	26	o	UA_VAP	0	y				!	vapor phase UA
+V	27	o	UA_TP	0	y				!	two-phase UA
+V	28	o	UA_LIQ	0	y				!	liquid-phase UA
+C	7	38	n	10001	0	0		!	LiquidLine	"LINE LOSS MODEL W HEAT TRANSFER AND PRESSURE DROP CALCULATIONS, CONSIDERING VISCOSITY VARIATION"
+P	0	d	Length	0		44			!	Equivalent line length [ft]
+P	1	d	ID	0		0.025916667			!	inside diameter [ft]
+P	2	d	DP	0		-250			!	"reference line pressure drop, [psiD]; if < -100.0, mean using turbulent flow DP calculation. "
+P	3	d	Mf_Refe	0		100			!	"reference mass flow rate for getting the reference line pressure drop, [lbm/hr]"
+P	4	d	N	0		2			!	exponential number of pressure drop as a function of Reynolds number
+P	5	i	Substance	0		-1			!	"-1 - refrigerant, 0 - air, 1 - water, 2- glycol "
+P	6	d	Vis_refer	0		1.00E-05			!	"reference dynamic viscosity, [lb/ft/h]"
+P	7	d	InVol	0		5.27E-02			!	inner volume for charge calculation [ft^3]
+V	0	r	MR	0	y				!	refrigerant mass flow rate [lb/h]
+V	1	r	H_in	0	y				!	"entering enthalpy, [Btu/h]"
+V	2	r	H_out	0	y				!	"exit enthalpy, [Btu/h]"
+V	3	r	P_in	0	y				!	"inlet pressure, psi"
+V	4	r	P_out	0	y				!	"exit pressure, psi"
+V	5	i	DP	0	y	1			!	pressure drop [psid]
+V	6	g	DH	0	y	0			!	enthalpy change [btu/lb]
+V	7	r	DQ	0	y				!	"line heat transfer rate, [btu/lb-hr]"
+V	8	r	DP_Adj	0	y				!	Pressure drop multiplier [-]
+V	9	i	DT	0	y	0			!	"reference temperature drop at single phase specific heat, [R]"
+V	10	o	CHARG	0	y				!	CHARGE MASS IN LINE [LBM]
+C	8	-201	n	10001				!	ChargSOLVER	NEWTON SOLVER W BOUNDS; VARY THE DRIVING VARAIBLE AND MATCH THE RESULT TO THE TARGET VALUE
+P	0	i	SOLVERON	0		0			!	1: turn on the solver; others: turn off the solver
+P	1	i	IDCOMPIN	0		5			!	ID of the component containing the driving variable or parameter
+P	2	i	ISPARAMETER	0		0			!	1: is a parameter; other is a variable
+P	3	i	IDXIN	0		21			!	ID of the driving variable or parameter
+P	4	i	IDCOMPOUT	0		9			!	ID of the component containing the target variable
+P	5	i	IDXOUT	0		0			!	ID of the target variable
+P	6	d	TORL	0		0.01			!	Relative solving tolerance; >=0.001
+P	7	d	TARGET	0		7.00			!	target value to be reached
+P	8	d	INIVAL	0		10			!	initial value for the driving variable
+P	9	d	LOWBOUND	0		-0.3			!	low bound for the driving variable
+P	10	d	HIGHBOUND	0		30			!	high bound for the driving variable
+P	11	i	MAXITER	0		30			!	MAX NUMBER OF ITERATIONS; Suggested MAX:30
+P	12	d	STEP	0		0.5			!	Step of independent variable change for calculating derivative
+P	13	i	DIREC	0		1			!	searching direction; >=0: target value increases with driving variable; <0: target value decreases with driving variable
+V	0	i	DRIVEVAR	0	n	10			!	driving variable
+V	1	o	RESULT	0	n				!	result variable
+C	9	-2	n	10001				!	ChargFunc	V:DischargeLine:CHARG+V:SunctionLine:CHARG+V:LiquidLine:CHARG+V:Condenser:CHARGE+V:Evaporator:CHARGE
+V	0	o	SysCharge	0	y	5.9			!	dependent variable ofSysCharge
+E	3;V;10	S;+	4;V;10	S;+	7;V;10	S;+	5;V;11	S;+	6;V;11					!	V:DischargeLine:CHARG+V:SunctionLine:CHARG+V:LiquidLine:CHARG+V:Condenser:CHARGE+V:Evaporator:CHARGE
+C	10	-1	n	10001				!	INDCFMcal	Equation Object
+V	0	o	INDCFM	0	y	1			!	dependent variable of CFM
+E	2;V;4	S;/	D;60.0					!	V:EvapFan:vol_flow_rate_in/60.0
+C	11	-1	n	10001				!	ODCFMcal	Equation Object
+V	0	o	ODCFM	0	y	1			!	dependent variable of ODCFM
+E	1;V;4	S;/	D;60.0					!	V:CondFan:vol_flow_rate_in/60.0
+C	12	-2	n	10001				!	TotPowCal	V:CondFan:Power+V:EvapFan:Power+V:COMP:Power
+V	0	o	TotPow	0	y	1			!	dependent variable of TotPow
+E	1;V;5	S;+	2;V;5	S;+	0;V;5					!	V:CondFan:Power+V:EvapFan:Power+V:COMP:Power
+C	13	-1	n	10001				!	CapaCal	Equation Object
+V	0	o	NetCapa	0	y	1			!	dependent variable of NetCapa
+E	2;V;5	S;*	D;-3.412	S;-	6;V;20					!	V:EvapFan:Power*3.412-V:Evaporator:Q_TOT
+C	14	-1	n	10001				!	EERcal	Equation Object
+V	0	o	EER	0	y	1			!	dependent variable of EER
+E	13;V;0	S;/	12;V;0					!	V:NetCapa:NetCapa/V:TotPow:TotPow
+{	End of Components	}							!	end of components and equations
+!	" After this row, input variable linkages, starting with 'L'"
+L	s	0;0	3;0	!	State point connection from compressor exit to discharge line entrance
+L	s	4;0	0;0	!	State point connection from suction line to compressor entrance
+L	s	3;0	5;0	!	State point connection from discharge line exit to condenser entrance
+L	s	6;0	4;0	!	State point connection from evaporator exit to suction line entrace
+L	s	5;0	7;0	!	State point connection from condenser to liquid line
+L	a	5;0	1;0	!	air flow connection between condenser to outdoor fan
+L	a	6;0	2;0	!	air flow connection between evaporator to indoor blower
+L	V	7;2	6;1	!	Enthalpy connection between liquid line to evaporator entrance
+!	" After this row, input batch run inputs, starting with 'B'"
+O	14;0	13;0	12;0	9;0	0;0	0;1		! 	output variable shortlist
