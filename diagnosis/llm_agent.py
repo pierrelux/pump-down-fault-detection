@@ -95,7 +95,8 @@ REASONING: <your explanation>
 Be efficient — try to diagnose in as few sensor readings as possible."""
 
 
-def build_llm_agent(model: str = "claude-sonnet-4-20250514", verbose: bool = False):
+def build_llm_agent(model: str = "claude-sonnet-4-20250514", verbose: bool = False,
+                    thinking: bool = False, thinking_budget: int = 4096):
     """Create an LLM agent function compatible with run_evaluation."""
 
     client = anthropic.Anthropic()
@@ -105,25 +106,52 @@ def build_llm_agent(model: str = "claude-sonnet-4-20250514", verbose: bool = Fal
         system_prompt = SYSTEM_PROMPT_TEMPLATE.format(
             spec_sheet=spec_sheet, baseline=baseline_text)
 
+        user_msg = "Please diagnose this HVAC system. Start by taking current sensor readings and comparing to the baseline."
+        if thinking:
+            # With extended thinking, system prompt goes in the user message
+            user_msg = system_prompt + "\n\n" + user_msg
         messages = [
-            {"role": "user", "content": "Please diagnose this HVAC system. Start by taking current sensor readings and comparing to the baseline."}
+            {"role": "user", "content": user_msg}
         ]
 
         # Tool-use loop
         for _ in range(10):  # max 10 rounds
-            response = client.messages.create(
+            kwargs = dict(
                 model=model,
-                max_tokens=1024,
-                system=system_prompt,
+                max_tokens=thinking_budget + 2048 if thinking else 1024,
                 tools=TOOLS,
                 messages=messages,
             )
+            if thinking:
+                kwargs["thinking"] = {"type": "enabled", "budget_tokens": thinking_budget}
+                # thinking requires temperature=1
+                kwargs["temperature"] = 1
+            else:
+                kwargs["system"] = system_prompt
+
+            for attempt in range(5):
+                try:
+                    if thinking:
+                        with client.messages.stream(**kwargs) as stream:
+                            response = stream.get_final_message()
+                    else:
+                        response = client.messages.create(**kwargs)
+                    break
+                except anthropic.APIStatusError as e:
+                    if "overloaded" in str(e).lower() and attempt < 4:
+                        import time
+                        time.sleep(10 * (attempt + 1))
+                        continue
+                    raise
 
             # Check for tool use
             tool_calls = [b for b in response.content if b.type == "tool_use"]
             text_blocks = [b for b in response.content if b.type == "text"]
+            thinking_blocks = [b for b in response.content if b.type == "thinking"]
 
-            if verbose and text_blocks:
+            if verbose:
+                for tb in thinking_blocks:
+                    print(f"    THINK: {tb.thinking[:200]}")
                 for tb in text_blocks:
                     print(f"    AGENT: {tb.text[:200]}")
 
@@ -220,9 +248,12 @@ def main():
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--model", default="claude-sonnet-4-20250514")
     parser.add_argument("--verbose", action="store_true")
+    parser.add_argument("--thinking", action="store_true", help="Enable extended thinking")
+    parser.add_argument("--thinking-budget", type=int, default=4096)
     args = parser.parse_args()
 
-    agent_fn = build_llm_agent(model=args.model, verbose=args.verbose)
+    agent_fn = build_llm_agent(model=args.model, verbose=args.verbose,
+                               thinking=args.thinking, thinking_budget=args.thinking_budget)
 
     print(f"Model: {args.model}")
     print(f"Scenarios: {args.n}, seed: {args.seed}")
