@@ -212,6 +212,9 @@ def charge_residual(
     ref,
     V_air_frontal,
     n_segments=30,
+    condenser_fouling=1.0,
+    evap_approach_K=12.0,
+    compressor_degradation=1.0,
 ):
     """Charge inventory residual: M_total(T_cond) - M_target.
 
@@ -231,6 +234,9 @@ def charge_residual(
     ref : Refrigerant
     V_air_frontal : float — condenser air frontal velocity [m/s]
     n_segments : int — condenser segments
+    condenser_fouling : float — air-side HTC multiplier (1.0=healthy, <1.0=fouled)
+    evap_approach_K : float — evaporator approach temperature [K] (larger=fouled)
+    compressor_degradation : float — mass flow multiplier (1.0=healthy, <1.0=worn)
 
     Returns
     -------
@@ -238,13 +244,13 @@ def charge_residual(
     """
     # 1. Pressures from saturation temperatures
     P_cond = ref.P_sat(T_cond_K)
-    T_evap_K = T_indoor_K - 12.0  # typical approach for indoor coil
+    T_evap_K = T_indoor_K - evap_approach_K
     P_evap = ref.P_sat(T_evap_K)
 
     # 2. Compressor operating point
     Te_F = K_to_F(T_evap_K)
     Tc_F = K_to_F(T_cond_K)
-    m_dot = compressor.mass_flow_kg_s(Te_F, Tc_F)
+    m_dot = compressor.mass_flow_kg_s(Te_F, Tc_F) * compressor_degradation
     T_dis, h_dis, _ = compressor.discharge_state(Te_F, Tc_F)
 
     # 3. Condenser model → charge + subcooling
@@ -257,6 +263,7 @@ def charge_residual(
         geom=condenser_geom,
         ref=ref,
         n_segments=n_segments,
+        htc_air_multiplier=1.22 * condenser_fouling,
     )
     M_condenser = cond_result.charge_total
 
@@ -313,6 +320,9 @@ def solve_charge_balance(
     n_segments=30,
     T_cond_bracket=None,
     verbose=False,
+    condenser_fouling=1.0,
+    evap_approach_K=12.0,
+    compressor_degradation=1.0,
 ):
     """Find the steady-state operating point where charge inventory = target.
 
@@ -334,6 +344,9 @@ def solve_charge_balance(
     T_cond_bracket : tuple(float, float) — (T_cond_lo, T_cond_hi) [K]
         Default: (T_outdoor + 5, T_outdoor + 40)
     verbose : bool — print iteration info
+    condenser_fouling : float — air-side HTC multiplier (1.0=healthy, <1.0=fouled)
+    evap_approach_K : float — evaporator approach temperature [K] (larger=fouled)
+    compressor_degradation : float — mass flow multiplier (1.0=healthy, <1.0=worn)
 
     Returns
     -------
@@ -368,6 +381,9 @@ def solve_charge_balance(
         ref=ref,
         V_air_frontal=V_air_frontal,
         n_segments=n_segments,
+        condenser_fouling=condenser_fouling,
+        evap_approach_K=evap_approach_K,
+        compressor_degradation=compressor_degradation,
     )
 
     # Evaluate bracket endpoints
@@ -423,7 +439,8 @@ def solve_charge_balance(
             T_lo, T_hi,
             args=(M_target_kg, T_indoor_K, T_outdoor_K, superheat_K,
                   compressor, condenser_geom, system_geom, ref,
-                  V_air_frontal, n_segments),
+                  V_air_frontal, n_segments,
+                  condenser_fouling, evap_approach_K, compressor_degradation),
             xtol=0.01,   # 0.01 K tolerance
             rtol=1e-6,
             maxiter=50,
@@ -431,12 +448,12 @@ def solve_charge_balance(
 
     # Re-evaluate at solution to get full state
     P_cond = ref.P_sat(T_cond_sol)
-    T_evap_K = T_indoor_K - 12.0
+    T_evap_K = T_indoor_K - evap_approach_K
     P_evap = ref.P_sat(T_evap_K)
     Te_F = K_to_F(T_evap_K)
     Tc_F = K_to_F(T_cond_sol)
 
-    m_dot = compressor.mass_flow_kg_s(Te_F, Tc_F)
+    m_dot = compressor.mass_flow_kg_s(Te_F, Tc_F) * compressor_degradation
     T_dis, h_dis, _ = compressor.discharge_state(Te_F, Tc_F)
 
     cond_result = solve_mchx_condenser(
@@ -448,6 +465,7 @@ def solve_charge_balance(
         geom=condenser_geom,
         ref=ref,
         n_segments=n_segments,
+        htc_air_multiplier=1.22 * condenser_fouling,
     )
 
     # Recompute component charges
